@@ -61,6 +61,15 @@ public class GamePanel extends JPanel implements ActionListener {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.PLAIN, 16));
         g.drawString("Deaths: " + presenter.getDeathCount(), 10, 30);
+        g.drawString("Time: " + model.getTimeString(), 10, 50); // Hiển thị thời gian
+
+        if (model.isPaused()) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 36));
+            g.drawString("PAUSED", 220, 200);
+        }
 
         if (presenter.isDead() || presenter.hasWonFinalMap()) {
             g.setColor(Color.BLACK);
