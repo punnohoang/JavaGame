@@ -22,7 +22,10 @@ public class GamePresenter {
     }
 
     public void update() {
-        if (gameOver) return;
+        if (gameOver || model.isPaused()) {
+            model.updateTime(); // Cập nhật thời gian để hiển thị đúng
+            return;
+        }
 
         Ball ball = model.getBall();
         ball.update(left, right);
@@ -36,6 +39,7 @@ public class GamePresenter {
         }
 
         checkWinAndSwitchMap();
+        model.updateTime(); // Cập nhật thời gian sau mỗi frame
     }
 
     private void checkWinAndSwitchMap() {
@@ -97,7 +101,9 @@ public class GamePresenter {
         left = false;
         right = false;
         wasDead = false;
-        // Giữ lại deathCount nếu muốn thống kê tổng kết sau
+        // Reset thời gian khi restart
+        model.setPaused(false);
+        model.updateTime();
     }
 
     public void handleKeyPressed(int keyCode) {
@@ -112,6 +118,11 @@ public class GamePresenter {
 
         if (gameOver) return;
 
+        if (keyCode == KeyEvent.VK_P) {
+            model.setPaused(!model.isPaused());
+            return;
+        }
+
         switch (keyCode) {
             case KeyEvent.VK_LEFT -> left = true;
             case KeyEvent.VK_RIGHT -> right = true;
@@ -120,7 +131,7 @@ public class GamePresenter {
     }
 
     public void handleKeyReleased(int keyCode) {
-        if (gameOver) return;
+        if (gameOver || model.isPaused()) return;
 
         switch (keyCode) {
             case KeyEvent.VK_LEFT -> left = false;
