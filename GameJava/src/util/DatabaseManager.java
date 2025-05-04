@@ -8,7 +8,7 @@ public class DatabaseManager {
     private static final String DRIVER_CLASS = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static final String URL = "jdbc:sqlserver://DESKTOP-9CKDHNV:1433;databaseName=Score;encrypt=false;trustServerCertificate=true;";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123456";
+    private static final String PASSWORD = "123456789";
 
     static {
         try {
@@ -20,11 +20,12 @@ public class DatabaseManager {
 
     // Gọi khi người chơi nhập tên để bắt đầu chơi
     public static void insertNewPlayer(String playerName) {
-        String sql = "INSERT INTO HighScores (playerName, score) VALUES (?, ?)";
+        String sql = "INSERT INTO HighScores (playerName, score, deathCount) VALUES (?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, playerName);
             stmt.setInt(2, 0); // Điểm khởi đầu là 0
+            stmt.setInt(3, 0); // Số lần chết khởi đầu là 0
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,14 +67,38 @@ public class DatabaseManager {
         return topPlayers;
     }
 
-    // Hàm lưu kết quả cuối cùng của người chơi (số lần chết)
-    public static void recordFinalResult(String playerName, int deathCount) {
-        String sql = "UPDATE HighScores SET deathCount = ? WHERE playerName = ?";
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, deathCount);
-            stmt.setString(2, playerName);
-            stmt.executeUpdate();
+    // Lưu kết quả của người chơi (score và deathCount)
+    public static void savePlayerResult(String playerName, int score, int deathCount) {
+        String checkSql = "SELECT COUNT(*) FROM HighScores WHERE playerName = ?";
+        String updateSql = "UPDATE HighScores SET score = ?, deathCount = ? WHERE playerName = ?";
+        String insertSql = "INSERT INTO HighScores (playerName, score, deathCount) VALUES (?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            // Kiểm tra xem playerName đã tồn tại chưa
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
+                checkStmt.setString(1, playerName);
+                ResultSet rs = checkStmt.executeQuery();
+                rs.next();
+                boolean exists = rs.getInt(1) > 0;
+
+                if (exists) {
+                    // Cập nhật score và deathCount nếu playerName đã tồn tại
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+                        updateStmt.setInt(1, score);
+                        updateStmt.setInt(2, deathCount);
+                        updateStmt.setString(3, playerName);
+                        updateStmt.executeUpdate();
+                    }
+                } else {
+                    // Thêm bản ghi mới nếu playerName chưa tồn tại
+                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                        insertStmt.setString(1, playerName);
+                        insertStmt.setInt(2, score);
+                        insertStmt.setInt(3, deathCount);
+                        insertStmt.executeUpdate();
+                    }
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

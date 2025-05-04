@@ -13,7 +13,7 @@ public class Map1 extends AbstractMap {
         background = new Background(new Color(200, 255, 255));
         
         // Đọc độ cao cột từ file
-        List<int[]> columnPositions =  MapDataLoader.readColumn("C:\\Users\\AD MIN\\eclipse-workspace\\GameJava\\src\\model\\Map1.txt");
+        List<int[]> columnPositions =  MapDataLoader.readColumn("C:\\Users\\AD MIN\\git\\repository\\GameJava\\src\\model\\Map1.txt");
 		initColumns(columnPositions, 40, 430); // width=40, baseY=430
 
 

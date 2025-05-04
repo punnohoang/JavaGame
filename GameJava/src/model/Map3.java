@@ -14,7 +14,7 @@ public class Map3 extends AbstractMap {
 		background = new Background(new Color(255, 200, 200)); // Màu nền cho Map3
 
 		// Các cột riêng cho Map3
-        List<int[]> columnPositions =  MapDataLoader.readColumn("C:\\Users\\AD MIN\\eclipse-workspace\\GameJava\\src\\model\\Map3.txt");
+        List<int[]> columnPositions =  MapDataLoader.readColumn("C:\\Users\\AD MIN\\git\\repository\\GameJava\\src\\model\\Map3.txt");
 		initColumns(columnPositions, 40, 430); // width=40, baseY=430
 
 		// Vùng chiến thắng cuối bản đồ

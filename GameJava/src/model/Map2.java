@@ -13,7 +13,7 @@ public class Map2 extends AbstractMap {
         // Nền riêng cho Map2
         background = new Background(new Color(255, 200, 200));
         // Cột riêng cho Map2
-        List<int[]> columnPositions =  MapDataLoader.readColumn("C:\\Users\\AD MIN\\eclipse-workspace\\GameJava\\src\\model\\Map2.txt");
+        List<int[]> columnPositions =  MapDataLoader.readColumn("C:\\Users\\AD MIN\\git\\repository\\GameJava\\src\\model\\Map2.txt");
 		initColumns(columnPositions, 40, 430); // width=40, baseY=430
 
         // Đích đến (mũi tên)

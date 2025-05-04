@@ -65,10 +65,8 @@ public class GamePresenter {
             int currentMap = model.getCurrentMapIndex();
 
             if (!hasWonFinalMap) {
-                switch (currentMap) {
-                    case 0, 1 -> DatabaseManager.updateScore(playerName, 30);
-                    case 2 -> DatabaseManager.updateScore(playerName, 40);
-                }
+                // Lưu playerName, score, deathCount vào database khi thắng map
+                DatabaseManager.savePlayerResult(playerName, model.getScore(), deathCount);
             }
 
             if (!model.isLastMap()) {
@@ -80,7 +78,8 @@ public class GamePresenter {
                 hasWonFinalMap = true;
                 gameOver = true;
                 System.out.println("🎉 You won the final map! Final score: " + model.getScore() + ", Deaths: " + deathCount);
-                DatabaseManager.recordFinalResult(playerName, deathCount);
+                // Lưu kết quả cuối cùng vào database
+                DatabaseManager.savePlayerResult(playerName, model.getScore(), deathCount);
             }
         }
     }
@@ -122,7 +121,7 @@ public class GamePresenter {
         wasDead = false;
         lastPassedColumnsCount = 0;
         */
-        
+
         // Cơ chế 2: Trở về cột ngay trước vùng chết
         int newX = 0;
         int newY = 400;
@@ -152,7 +151,6 @@ public class GamePresenter {
         right = false;
         wasDead = false;
         lastPassedColumnsCount = columnsToRestore;
-        
     }
 
     public void handleKeyPressed(int keyCode) {
